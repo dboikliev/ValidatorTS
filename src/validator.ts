@@ -9,7 +9,7 @@ export function range(min: number, max: number, message: string) {
 }
 
 export function length(min: number, max: number, message: string) {
-    return defineValidator(property => property && property.length && property.length >= min && property.length <= max, message);
+    return defineValidator(property => property && property.length >= min && property.length <= max, message);
 }
 
 function defineValidator(vadalidator: (obj) => boolean, message: string) {
