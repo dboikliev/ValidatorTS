@@ -3,6 +3,7 @@ A TypeScript validator implementation inspired by C# data annotations like [Requ
 
 ## Example
 
+#### Code:
 ```typescript
 import {
     required,
@@ -28,4 +29,14 @@ class Person extends Human {
 
 let person = new Person();
 console.log(validate(person));
+```
+
+#### Result:
+
+```
+[ 'name is required.',
+  'age must be in the range [1, 10].',
+  'data must be of length 10.',
+  'data is required',
+  'sex is required.' ]
 ```
