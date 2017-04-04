@@ -1,5 +1,13 @@
 import "reflect-metadata";
 
+let validatorKey = Symbol("validator");
+
+interface IValidator {
+    validate: (obj) => boolean;
+    message: string,
+    property: string
+}
+
 export function required(message: string) {
     return defineValidator(property => !!property, message);
 }
@@ -18,30 +26,24 @@ export function length(min: number, max: number, message: string) {
     );
 }
 
-function defineValidator(vadalidator: (obj) => boolean, message: string) {
+function defineValidator(vadalidatorPredicate: (obj) => boolean, message: string) {
     return function (target: any, propertyKey: string | symbol) {
         let symbol = Symbol();
-        Reflect.defineMetadata(symbol, {
-            validate: (obj) => vadalidator(obj[propertyKey]),
-            message: message,
-            property: propertyKey
+        Reflect.defineMetadata(symbol, { 
+            [validatorKey]: {
+                validate: (obj) => vadalidatorPredicate(obj[propertyKey]),
+                message: message,
+                property: propertyKey
+            }
         }, target);
     };
 }
 
 export function validate(target): {} {
-    let result = [];
-
-    Reflect.getMetadataKeys(target).forEach(key => {
-        let validator = Reflect.getMetadata(key, target);
-        let validation = validator.validate && !validator.validate(target);
-        if (validation) {
-            result.push({
-                property: validator.property,
-                message: validator.message
-            });
-        }
-    });
+    let result = Reflect.getMetadataKeys(target)
+        .map(key => Reflect.getMetadata(key, target))
+        .filter(metadata => metadata[validatorKey] && !metadata[validatorKey].validate(target))
+        .map(metadata => ({ property: metadata[validatorKey].property, message: metadata[validatorKey].message }));
     
     return result;
 };
