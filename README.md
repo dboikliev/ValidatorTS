@@ -68,7 +68,7 @@ class Person extends Human {
 
 #### Result: 
 
-When @validated is used on a method, an object containing the validation results for each of the method arguments will be passed as the last argument.
+When _@validated_ is used on a method, an object containing the validation results for each of the method arguments will be passed as the last argument.
 It can be retrieved either by explicitly adding a parameter to the method's signature or by indexing the _arguments_ array.
 The indices in the modelState array correspond to the indices of the method's parameters - _modelState[0]_ cotnains the validation errors for parameter _p_ of the method _test_ in the previous example.
 
