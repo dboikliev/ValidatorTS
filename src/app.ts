@@ -2,11 +2,12 @@ import {
     required,
     range,
     length,
-    validate
+    validate,
+    validated
 } from "./validator";
 
 class Human {
-    @required("Sex is required.")
+    @required("sex is required.")
     sex: string;
 }
 
@@ -18,21 +19,14 @@ class Person extends Human {
     @required("data is required")
     @length(10, 10, "data must be of length 10.")
     data;
+
+    @validated
+    test(p: Person) {
+        let modelState = arguments[arguments.length - 1];
+        console.log(modelState);
+        return;
+    }
 }
 
-let person1 = new Person();
-let person2 = new Human();
-
-let person3 = new Person();
-person3.age = 5;
-
-
-// console.log(validate(new Test()));
-// // console.log(validate(person1));
-console.log(validate(person1));
-console.log();
-console.log(validate(person2));
-console.log();
-console.log(validate(person3));
-
-
+let p = new Person();
+p.test(new Person());
