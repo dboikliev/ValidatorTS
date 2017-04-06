@@ -1,5 +1,5 @@
 # ValidatorTS
-A TypeScript validator implementation inspired by C# data annotations like [Required], [Range] etc.
+A TypeScript validator implementation inspired by .NET data annotations like [Required], [Range] etc.
 
 ## Example
 
