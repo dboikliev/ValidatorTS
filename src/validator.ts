@@ -27,7 +27,7 @@ export function length(min: number, max: number, message: string) {
 }
 
 export function regex(expression: RegExp, message: string) {
-    return defineValidator(property => property != undefined && expression.test(property as string), 
+    return defineValidator(property => property !== undefined && expression.test(property as string),
         message);
 }
 
@@ -44,7 +44,7 @@ function defineValidator(vadalidatorPredicate: (obj) => boolean, message: string
     };
 }
 
-export function validate(target): {} {
+export function validate(target): { [key: string]: string }[] {
     if (typeof target === "object") {
         let result = Reflect.getMetadataKeys(target)
             .map(key => Reflect.getMetadata(key, target))
