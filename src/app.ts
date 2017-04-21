@@ -2,6 +2,7 @@ import {
     required,
     range,
     length,
+    regex,
     validate,
     validated
 } from "./validator";
@@ -18,15 +19,10 @@ class Person extends Human {
     age: number;
     @required("data is required")
     @length(10, 10, "data must be of length 10.")
-    data;
+    @regex(/1+/, "Data must be a string of 1s")
+    data = "a";
 
-    @validated
-    test(p: Person) {
-        let modelState = arguments[arguments.length - 1];
-        console.log(modelState);
-        return;
-    }
 }
 
-let p = new Person();
-p.test(new Person());
+console.log(validate(new Person()));
+

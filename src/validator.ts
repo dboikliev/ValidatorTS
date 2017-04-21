@@ -26,6 +26,11 @@ export function length(min: number, max: number, message: string) {
     );
 }
 
+export function regex(expression: RegExp, message: string) {
+    return defineValidator(property => property != undefined && expression.test(property as string), 
+        message);
+}
+
 function defineValidator(vadalidatorPredicate: (obj) => boolean, message: string) {
     return function (target: any, propertyKey: string | symbol) {
         let symbol = Symbol();
