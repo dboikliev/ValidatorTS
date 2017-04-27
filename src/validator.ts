@@ -35,12 +35,8 @@ export function length(min: number, max: number, message: string) {
 }
 
 export function regex(expression: RegExp, message: string) {
-<<<<<<< HEAD
     return defineValidator(
         (obj, propertyKey) => typeof obj[propertyKey] == "string" && expression.test(obj[propertyKey] as string), 
-=======
-    return defineValidator(property => property !== undefined && expression.test(property as string),
->>>>>>> 7160c646bf6488ff0c5ffac57a3fbeeeaf5b91be
         message);
 }
 
