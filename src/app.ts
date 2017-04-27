@@ -29,7 +29,6 @@ class Person extends Human {
     password = "1";
 
     @compare("password", "both passwords must be the same.")
-    @must(t => t.)
     passwordRepeat;
 }
 
