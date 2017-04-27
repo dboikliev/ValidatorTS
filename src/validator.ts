@@ -9,34 +9,43 @@ interface IValidator {
 }
 
 export function required(message: string) {
-    return defineValidator(property => !!property, message);
+    return defineValidator(
+        (obj, propertyKey) => Reflect.has(obj, propertyKey), 
+        message);
+}
+
+export function compare(propertyName: string, message: string) {
+    return defineValidator(
+        (obj, propertyKey) => obj[propertyName] === obj[propertyKey], 
+        message);
 }
 
 export function range(min: number, max: number, message: string) {
     return defineValidator(
-        property => property >= min && property <= max,
+        (obj, propertyKey) => obj[propertyKey] >= min && obj[propertyKey] <= max,
         message
     );
 }
 
 export function length(min: number, max: number, message: string) {
     return defineValidator(
-        property => property && property.length >= min && property.length <= max,
+        (obj, propertyKey) => obj[propertyKey] && obj[propertyKey].length >= min && obj[propertyKey].length <= max,
         message
     );
 }
 
 export function regex(expression: RegExp, message: string) {
-    return defineValidator(property => property != undefined && expression.test(property as string), 
+    return defineValidator(
+        (obj, propertyKey) => typeof obj[propertyKey] == "string" && expression.test(obj[propertyKey] as string), 
         message);
 }
 
-function defineValidator(vadalidatorPredicate: (obj) => boolean, message: string) {
+function defineValidator(vadalidatorPredicate: (obj: Object, propertyKey: string | symbol) => boolean, message: string) {
     return function (target: any, propertyKey: string | symbol) {
         let symbol = Symbol();
         Reflect.defineMetadata(symbol, {
             [validatorKey]: {
-                validate: (obj) => vadalidatorPredicate(obj[propertyKey]),
+                validate: (obj) => vadalidatorPredicate(obj, propertyKey),
                 message: message,
                 property: propertyKey
             }
