@@ -40,12 +40,12 @@ export function regex(expression: RegExp, message: string) {
         message);
 }
 
-function defineValidator(vadalidatorPredicate: (obj: Object, propertyKey: string | symbol) => boolean, message: string) {
+export function defineValidator(validatorPredicate: (obj: Object, propertyKey: string | symbol) => boolean, message: string): (target: any, propertyKey: string | symbol) => void {
     return function (target: any, propertyKey: string | symbol) {
         let symbol = Symbol();
         Reflect.defineMetadata(symbol, {
             [validatorKey]: {
-                validate: (obj) => vadalidatorPredicate(obj, propertyKey),
+                validate: (obj) => validatorPredicate(obj, propertyKey),
                 message: message,
                 property: propertyKey
             }
