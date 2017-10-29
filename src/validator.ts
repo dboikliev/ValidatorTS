@@ -2,6 +2,12 @@ import "reflect-metadata";
 
 let validatorKey = Symbol("validator");
 
+// type ValidatorDescriptor<T> = {
+//     validator: (obj: T) => boolean,
+//     message: string,
+//     property: keyof T
+// }
+
 interface IValidator {
     validate: (obj) => boolean;
     message: string;
@@ -53,12 +59,13 @@ export function defineValidator(validatorPredicate: (obj: Object, propertyKey: s
     };
 }
 
-export function validate(target): { [key: string]: string }[] {
+export function validate<T>(target: T): { [key: string]: string }[] {
     if (typeof target === "object") {
         let result = Reflect.getMetadataKeys(target)
             .map(key => Reflect.getMetadata(key, target))
-            .filter(metadata => metadata[validatorKey] && !metadata[validatorKey].validate(target))
-            .map(metadata => ({ property: metadata[validatorKey].property, message: metadata[validatorKey].message }));
+            .map(metadata => metadata[validatorKey] as IValidator)
+            .filter(metadata => metadata && !metadata.validate(target))
+            .map(metadata => ({ property: metadata.property, message: metadata.message }));
 
         return result;
     }
