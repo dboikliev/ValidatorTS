@@ -2,14 +2,8 @@ import "reflect-metadata";
 
 let validatorKey = Symbol("validator");
 
-// type ValidatorDescriptor<T> = {
-//     validator: (obj: T) => boolean,
-//     message: string,
-//     property: keyof T
-// }
-
-interface IValidator {
-    validate: (obj) => boolean;
+interface IValidator<T> {
+    validate: (obj: T) => boolean;
     message: string;
     property: string;
 }
@@ -35,18 +29,22 @@ export function range(min: number, max: number, message: string) {
 
 export function length(min: number, max: number, message: string) {
     return defineValidator(
-        (obj, propertyKey) => obj[propertyKey] && obj[propertyKey].length >= min && obj[propertyKey].length <= max,
+        (obj, propertyKey) => obj[propertyKey] && 
+                              obj[propertyKey].length >= min && 
+                              obj[propertyKey].length <= max,
         message
     );
 }
 
 export function regex(expression: RegExp, message: string) {
     return defineValidator(
-        (obj, propertyKey) => typeof obj[propertyKey] == "string" && expression.test(obj[propertyKey] as string), 
+        (obj, propertyKey) => typeof obj[propertyKey] == "string" && 
+                              expression.test(obj[propertyKey]), 
         message);
 }
 
-export function defineValidator(validatorPredicate: (obj: Object, propertyKey: string | symbol) => boolean, message: string): (target: any, propertyKey: string | symbol) => void {
+export function defineValidator(validatorPredicate: (obj: Object, propertyKey: string | symbol) => boolean, message: string)
+    : (target: any, propertyKey: string | symbol) => void {
     return function (target: any, propertyKey: string | symbol) {
         let symbol = Symbol();
         Reflect.defineMetadata(symbol, {
@@ -63,7 +61,7 @@ export function validate<T>(target: T): { [key: string]: string }[] {
     if (typeof target === "object") {
         let result = Reflect.getMetadataKeys(target)
             .map(key => Reflect.getMetadata(key, target))
-            .map(metadata => metadata[validatorKey] as IValidator)
+            .map(metadata => metadata[validatorKey] as IValidator<T>)
             .filter(metadata => metadata && !metadata.validate(target))
             .map(metadata => ({ property: metadata.property, message: metadata.message }));
 
